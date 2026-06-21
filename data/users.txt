@@ -1,0 +1,3 @@
+admin|admin123|Administrator|ADMIN|1
+staff1|staff123|Phạm Văn A|STAFF|1
+customer1|cust123|Nguyễn Thị B|CUSTOMER|1

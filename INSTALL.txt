@@ -1,0 +1,167 @@
+================================================================================
+          RESTAURANT MANAGEMENT SYSTEM - INSTALLATION GUIDE
+================================================================================
+
+STEP 1: PREREQUISITES
+────────────────────
+✓ C++17 compiler (g++, clang++, or MSVC)
+✓ ~50MB disk space
+✓ Linux, macOS, or Windows (WSL)
+
+Check compiler:
+  g++ --version
+  
+If not installed:
+  Ubuntu/Debian:
+    sudo apt-get update
+    sudo apt-get install build-essential
+  
+  macOS:
+    brew install gcc
+  
+  Windows:
+    Install WSL (Windows Subsystem for Linux)
+
+STEP 2: BUILD APPLICATION
+─────────────────────────
+Option A: Using build script (Recommended)
+  cd /workspaces/DSA_Application
+  chmod +x build.sh
+  ./build.sh
+
+Option B: Manual compilation
+  cd /workspaces/DSA_Application
+  g++ -std=c++17 -I. main.cpp -o restaurant_app
+
+If successful:
+  ✓ File "restaurant_app" will be created
+  ✓ "data" directory will be ready
+
+STEP 3: PREPARE DATA
+────────────────────
+Data files should already exist in data/ directory:
+  ✓ users.txt       - User accounts
+  ✓ menu.txt        - Menu items
+  ✓ orders.txt      - Order history (empty at startup)
+
+To reset data:
+  rm data/orders.txt
+  touch data/orders.txt
+
+STEP 4: RUN APPLICATION
+───────────────────────
+./restaurant_app
+
+You should see welcome message and login prompt.
+
+STEP 5: LOGIN & EXPLORE
+───────────────────────
+Default accounts:
+  
+  Admin:
+    Username: admin
+    Password: admin123
+    Role: Administrator
+  
+  Staff:
+    Username: staff1
+    Password: staff123
+    Role: Kitchen staff
+  
+  Customer:
+    Username: customer1
+    Password: cust123
+    Role: Regular customer
+
+Try each role to see different features!
+
+TROUBLESHOOTING
+───────────────
+
+Problem: "command not found: g++"
+Solution: Install GCC (see STEP 1)
+
+Problem: "cannot open output file app: Is a directory"
+Solution: Executable name conflicts with app/ directory
+  Use: g++ -std=c++17 -I. main.cpp -o restaurant_app
+
+Problem: Build succeeds but app crashes on startup
+Solution: Check data files exist
+  ls -la data/
+  Should show: users.txt, menu.txt, orders.txt
+
+Problem: "permission denied" when running build.sh
+Solution: Make script executable
+  chmod +x build.sh
+  ./build.sh
+
+FEATURES TO TRY
+───────────────
+
+Admin Mode:
+  ✓ Menu Management (Add, View, Sort items)
+  ✓ Statistics (Revenue, Order history, Top items)
+  ✓ User Management (Create staff accounts)
+  
+  Try this sequence:
+    1. Login as admin
+    2. Go to Menu Management
+    3. Select "View Menu by Price" (uses HeapSort)
+    4. Go to Statistics
+    5. Select "Orders History" (uses MergeSort)
+
+Staff Mode:
+  ✓ Kitchen Queue Management
+  ✓ Task Processing with Priority
+  
+  Try this:
+    1. (Create an order as customer first)
+    2. Login as staff1
+    3. View Kitchen Queue
+    4. Mark order as Ready
+
+Customer Mode:
+  ✓ Browse Menu
+  ✓ Create Orders
+  ✓ View Order History
+  
+  Try this:
+    1. Login as customer1
+    2. View Menu
+    3. Create Order (add 2-3 items)
+    4. View My Orders
+
+DOCUMENTATION
+──────────────
+After installation, read:
+  1. INDEX.md          - Quick navigation
+  2. README.md         - Overview
+  3. ARCHITECTURE.md   - System design
+  4. ALGORITHM_USAGE.md- Algorithm details
+
+NEXT STEPS
+──────────
+See BUILD_TESTING.md for:
+  ✓ Detailed build options
+  ✓ Unit testing guide
+  ✓ Performance testing
+  ✓ Integration testing scenarios
+
+UNINSTALL
+──────────
+To completely remove:
+  rm -rf /workspaces/DSA_Application
+  
+To clean build artifacts only:
+  rm restaurant_app
+  rm -rf data/*.txt  (WARNING: Deletes all data!)
+
+SUCCESS!
+────────
+If you can login and see the menu system, installation is complete!
+
+For more information, see: INDEX.md or README.md
+
+================================================================================
+Questions? Check the documentation files or review the source code in app/
+================================================================================
