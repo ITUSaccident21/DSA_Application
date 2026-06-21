@@ -1,4 +1,5 @@
 1004|Banh Mi|80000.000000|MAIN COURSE|Bánh mì thơm ngon|1
+1011|Chicken Alfredo|70000.000000|MAIN COURSE|Mi y ga sot kem|1
 1009|Coconut Milk Soup|160000.000000|SOUP|Canh cơm khoai|1
 1006|Green Tea|30000.000000|BEVERAGE|Trà xanh|1
 1007|Grilled Chicken|180000.000000|MAIN COURSE|Gà nướng|1

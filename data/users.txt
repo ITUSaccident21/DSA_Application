@@ -1,4 +1,7 @@
+customer3|cust123|Ronaldo|CUSTOMER|1|1
 staff1|staff123|Phạm Văn A|STAFF|1|0
 admin|admin123|Administrator|ADMIN|1|0
 staff2|staff123|Trần Văn C|STAFF|1|0
+customer2|cust123|David Beckham|CUSTOMER|1|1
+staff3|staff123|Ronaldo1|STAFF|1|0
 customer1|cust123|Nguyễn Thị B|CUSTOMER|1|1

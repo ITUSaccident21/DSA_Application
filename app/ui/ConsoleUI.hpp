@@ -512,15 +512,15 @@ private:
         std::cout << "\n--- Order Statistics ---\n";
         std::cout << "Total Orders: " << orderManager.getOrderCount() << "\n";
         std::cout << "Pending Orders: " << orderManager.countOrdersByStatus(OrderStatus::PENDING) << "\n";
-        std::cout << "Confirmed Orders: " << orderManager.countOrdersByStatus(OrderStatus::CONFIRMED) << "\n";
-        std::cout << "Cooking Orders: " << orderManager.countOrdersByStatus(OrderStatus::COOKING) << "\n";
         std::cout << "Ready Orders: " << orderManager.countOrdersByStatus(OrderStatus::READY) << "\n";
-        std::cout << "Delivered Orders: " << orderManager.countOrdersByStatus(OrderStatus::DELIVERED) << "\n";
 
         std::cout << "\n--- Revenue ---\n";
-        std::cout << "Total Revenue: " << orderManager.getTotalRevenue() << " VND\n";
-        std::cout << "Delivered Orders Value: " << orderManager.getTotalRevenueByStatus(OrderStatus::DELIVERED)
-                  << " VND\n";
+        double confirmedRevenue = orderManager.getTotalRevenueByStatus(OrderStatus::CONFIRMED);
+        double readyRevenue = orderManager.getTotalRevenueByStatus(OrderStatus::READY);
+        std::cout << std::fixed << std::setprecision(0);
+        std::cout << "Total Revenue: " << (confirmedRevenue + readyRevenue) << " VND\n";
+        std::cout << "Confirmed Orders Value: " << confirmedRevenue << " VND\n";
+        std::cout << "Ready Orders Value: " << readyRevenue << " VND\n";
 
         std::cout << "\n--- Menu Statistics ---\n";
         std::cout << "Total Menu Items: " << menuManager.getSize() << "\n";
