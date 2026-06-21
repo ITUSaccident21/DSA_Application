@@ -1,3 +1,4 @@
-admin|admin123|Administrator|ADMIN|1
-staff1|staff123|Phạm Văn A|STAFF|1
-customer1|cust123|Nguyễn Thị B|CUSTOMER|1
+staff1|staff123|Phạm Văn A|STAFF|1|0
+admin|admin123|Administrator|ADMIN|1|0
+staff2|staff123|Trần Văn C|STAFF|1|0
+customer1|cust123|Nguyễn Thị B|CUSTOMER|1|1

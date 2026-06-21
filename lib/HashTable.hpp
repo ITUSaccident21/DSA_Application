@@ -98,6 +98,15 @@ public:
         return entry->second;
     }
 
+    template <typename Func>
+    void forEach(Func&& func) const {
+        for (const auto& bucket : buckets_) {
+            bucket.inorder([&](const Entry& entry) {
+                func(entry.first, entry.second);
+            });
+        }
+    }
+
     void clear() {
         for (auto& bucket : buckets_) {
             bucket.clear();

@@ -31,7 +31,7 @@ public:
             case Category::APPETIZER:
                 return "APPETIZER";
             case Category::MAIN_COURSE:
-                return "MAIN_COURSE";
+                return "MAIN COURSE";
             case Category::SOUP:
                 return "SOUP";
             case Category::DESSERT:
@@ -45,7 +45,7 @@ public:
 
     static Category stringToCategory(const std::string& catStr) {
         if (catStr == "APPETIZER") return Category::APPETIZER;
-        if (catStr == "MAIN_COURSE") return Category::MAIN_COURSE;
+        if (catStr == "MAIN COURSE") return Category::MAIN_COURSE;
         if (catStr == "SOUP") return Category::SOUP;
         if (catStr == "DESSERT") return Category::DESSERT;
         if (catStr == "BEVERAGE") return Category::BEVERAGE;

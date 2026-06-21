@@ -29,7 +29,7 @@ int main() {
         std::cout << "Menu items: " << menuManager.getSize() << "\n";
         std::cout << "Orders: " << orderManager.getOrderCount() << "\n\n";
 
-        ConsoleUI ui(userManager, menuManager, orderManager, kitchenManager);
+        ConsoleUI ui(userManager, menuManager, orderManager, kitchenManager, usersFile, menuFile, ordersFile);
         ui.run();
 
         // Unreachable: ui.run() loops until the process exits.

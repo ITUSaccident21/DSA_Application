@@ -32,7 +32,7 @@ public:
             }
 
             std::vector<std::string> parts = StringUtils::split(line, '|');
-            if (parts.size() != 5) {
+            if (parts.size() < 5) {
                 std::cerr << "Invalid user format: " << line << std::endl;
                 continue;
             }
@@ -42,8 +42,12 @@ public:
             std::string fullName = StringUtils::trim(parts[2]);
             UserRole role = User::stringToRole(StringUtils::trim(parts[3]));
             bool isActive = StringUtils::toInt(StringUtils::trim(parts[4])) == 1;
+            bool isVIP = false;
+            if (parts.size() >= 6) {
+                isVIP = StringUtils::toInt(StringUtils::trim(parts[5])) == 1;
+            }
 
-            User user(username, password, fullName, role, isActive);
+            User user(username, password, fullName, role, isActive, isVIP);
             manager.addUser(user);
         }
 
@@ -53,13 +57,17 @@ public:
 
     // Ghi người dùng vào file users.txt
     static bool saveUsers(const std::string& filename, UserManager& manager) {
-        // Note: UserManager không cung cấp iterator public, ta sẽ ghi những user được thêm
-        // Trong ứng dụng thực, ta cần mở rộng UserManager để hỗ trợ iteration
         std::ofstream file(filename);
         if (!file.is_open()) {
             std::cerr << "Cannot create file: " << filename << std::endl;
             return false;
         }
+
+        std::vector<User> users = manager.getAllUsers();
+        for (const auto& user : users) {
+            file << user.serialize() << "\n";
+        }
+
         file.close();
         return true;
     }
