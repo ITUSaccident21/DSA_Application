@@ -219,6 +219,7 @@ public:
         --size_;
     }
 
+    // O(n): singly-linked; must traverse to find the node before tail.
     void pop_back() {
         if (empty()) {
             throw std::out_of_range("LinkedList::pop_back on empty list");

@@ -7,6 +7,16 @@
 
 namespace ds {
 
+// Heap-based priority queue.
+//
+// Comparator semantics (opposite of std::priority_queue):
+//   compare(a, b) = true  →  a sinks, b rises  (b has higher priority).
+//
+// With the default Compare = std::less<T>, larger values have higher priority
+// (max-heap). To make smaller values have higher priority, pass std::greater<T>.
+//
+// When writing a custom comparator for type K:
+//   "a should be processed BEFORE b"  →  compare(b, a) = true  (b sinks, a rises)
 template <typename T, typename Compare = std::less<T>>
 class PriorityQueue {
 private:

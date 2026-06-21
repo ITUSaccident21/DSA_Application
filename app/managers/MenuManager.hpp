@@ -5,25 +5,12 @@
 #include <vector>
 #include <iostream>
 
-// MenuManager quản lý menu sử dụng mảng động
-//
-// Tại sao mảng động thay vì BST?
-// - Menu thường được duyệt từ đầu đến cuối (hiển thị cho khách)
-// - Sắp xếp theo tên để dễ tìm kiếm
-// - Ít thêm/xóa nhưng thường load một lần rồi đọc nhiều lần
-// - Mảng động cung cấp truy cập O(1) và duyệt tuyến tính O(n)
-//
-// Chiến lược sắp xếp:
-// - Load từ file: QuickSort (hiệu suất tổng thể tốt nhất)
-// - Thêm 1-2 mục mới: InsertionSort (không cần sắp xếp toàn bộ lại)
-
 class MenuManager {
 private:
-    MenuItem* items;           // Mảng động
-    std::size_t size;          // Số lượng item hiện tại
-    std::size_t capacity;      // Dung lượng của mảng
+    MenuItem* items;
+    std::size_t size;
+    std::size_t capacity;
 
-    // Mở rộng dung lượng khi cần
     void resize(std::size_t newCapacity) {
         if (newCapacity <= capacity) {
             return;
@@ -46,7 +33,6 @@ public:
         }
     }
 
-    // Thêm menu item
     void addItem(const MenuItem& item) {
         if (size >= capacity) {
             resize(capacity * 2);
@@ -54,10 +40,12 @@ public:
         items[size++] = item;
     }
 
-    // Thêm nhiều items và sắp xếp bằng InsertionSort
-    // (thay vì QuickSort toàn bộ, chỉ chèn những item mới)
+    // Thêm nhiều items và sắp xếp lại toàn bộ bằng InsertionSort.
+    // Dùng InsertionSort (không phải QuickSort) vì mảng đã gần có thứ tự
+    // trước khi thêm — InsertionSort đạt O(n + k) trên dữ liệu nearly-sorted
+    // (n = tổng items, k = số items mới), tốt hơn QuickSort O(n log n) trong
+    // trường hợp này.
     void addItemsAndSort(const MenuItem* newItems, std::size_t count) {
-        // Thêm tất cả items mới
         for (std::size_t i = 0; i < count; ++i) {
             if (size >= capacity) {
                 resize(capacity * 2);
@@ -65,7 +53,6 @@ public:
             items[size++] = newItems[i];
         }
 
-        // Sắp xếp lại bằng InsertionSort theo tên
         ds::insertionSort(items, items + size, [](const MenuItem& a, const MenuItem& b) {
             return a.name < b.name;
         });
@@ -78,7 +65,6 @@ public:
         });
     }
 
-    // Tìm item theo ID
     MenuItem* findById(int id) {
         for (std::size_t i = 0; i < size; ++i) {
             if (items[i].id == id) {
@@ -108,7 +94,6 @@ public:
         return nullptr;
     }
 
-    // Tìm items theo category
     std::vector<MenuItem*> findByCategory(Category cat) {
         std::vector<MenuItem*> result;
         for (std::size_t i = 0; i < size; ++i) {
@@ -119,7 +104,6 @@ public:
         return result;
     }
 
-    // Cập nhật item
     bool updateItem(int id, const MenuItem& newItem) {
         MenuItem* item = findById(id);
         if (item != nullptr) {
@@ -140,11 +124,9 @@ public:
         return false;
     }
 
-    // Lấy tất cả items
     MenuItem* getItems() { return items; }
     std::size_t getSize() const { return size; }
 
-    // Lấy danh sách items có sẵn
     std::vector<MenuItem*> getAvailableItems() {
         std::vector<MenuItem*> result;
         for (std::size_t i = 0; i < size; ++i) {
@@ -155,7 +137,7 @@ public:
         return result;
     }
 
-    // Xóa tất cả items
+    // Sets size=0 but keeps the allocated buffer (capacity unchanged).
     void clear() {
         size = 0;
     }

@@ -1,0 +1,967 @@
+% ============================================================
+%  BÁO CÁO ĐỒ ÁN CSC10004
+%  Restaurant Management System
+%  Compile: pdflatex (2 lần) hoặc xelatex
+% ============================================================
+\documentclass[12pt, a4paper]{article}
+
+% ── Tiếng Việt ──────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+
+% ── Layout ──────────────────────────────────────────────────
+\usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% ── Bảng & hình ─────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{xcolor}
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{primary}{RGB}{0,70,127}
+\definecolor{accent}{RGB}{160,25,25}
+\definecolor{warn}{RGB}{200,100,0}
+
+% ── Hộp chú thích ───────────────────────────────────────────
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+\newtcolorbox{notebox}{colback=warn!8, colframe=warn!60, fonttitle=\bfseries,
+  title=Lưu ý kỹ thuật, left=4pt, right=4pt, top=3pt, bottom=3pt}
+\newtcolorbox{bugbox}{colback=red!6, colframe=red!55, fonttitle=\bfseries,
+  title=Bug xác nhận từ test, left=4pt, right=4pt, top=3pt, bottom=3pt}
+\newtcolorbox{passbox}{colback=green!6, colframe=green!50!black, fonttitle=\bfseries,
+  title=Kết quả test, left=4pt, right=4pt, top=3pt, bottom=3pt}
+
+% ── Code listing ────────────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{primary}\bfseries,
+  commentstyle=\color{gray!70}\itshape,
+  stringstyle=\color{accent},
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  language=C++,
+  tabsize=4,
+  showstringspaces=false,
+  xleftmargin=1.5em
+}
+
+% ── TikZ sơ đồ ──────────────────────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds, calc}
+
+% ── Math ────────────────────────────────────────────────────
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ── Hyperlink ───────────────────────────────────────────────
+\usepackage[hidelinks]{hyperref}
+
+% ── Header / footer ─────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small CSC10004 -- Cấu trúc dữ liệu và Giải thuật}
+\rhead{\small Restaurant Management System}
+\cfoot{\thepage}
+
+% ── Định dạng tiêu đề ────────────────────────────────────────
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries\color{primary}}{{\thesection.}}{0.5em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries\color{primary!80}}{{\thesubsection.}}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{{\thesubsubsection.}}{0.5em}{}
+
+% ────────────────────────────────────────────────────────────
+\begin{document}
+
+% ============================================================
+%  TRANG BÌA
+% ============================================================
+\begin{titlepage}
+  \centering
+  \vspace*{0.5cm}
+  {\large\bfseries ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH}\\[0.2cm]
+  {\large\bfseries TRƯỜNG ĐẠI HỌC KHOA HỌC TỰ NHIÊN}\\[0.1cm]
+  {\large KHOA CÔNG NGHỆ THÔNG TIN}\\[1.5cm]
+
+  \rule{\textwidth}{1.5pt}\\[0.4cm]
+  {\LARGE\bfseries BÁO CÁO ĐỒ ÁN MÔN HỌC}\\[0.3cm]
+  {\Large\bfseries\color{primary} Restaurant Management System}\\[0.2cm]
+  {\normalsize Ứng dụng Quản lý Nhà hàng sử dụng\\
+  Cấu trúc dữ liệu và Giải thuật tự cài đặt}\\[0.3cm]
+  \rule{\textwidth}{1.5pt}\\[1.5cm]
+
+  \begin{minipage}[t]{0.48\textwidth}
+    \raggedright
+    \textbf{Môn học:}\\
+    CSC10004 -- Cấu trúc dữ liệu và Giải thuật\\[0.5cm]
+    \textbf{Lớp:} CQ2025/4\\[0.5cm]
+    \textbf{Giảng viên hướng dẫn:}\\
+    ThS. Bùi Duy Đăng\\
+    ThS. Huỳnh Lâm Hải Đăng\\
+    ThS. Nguyễn Thanh Tình
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \raggedright
+    \textbf{Nhóm sinh viên:}\\[0.3cm]
+    \begin{tabular}{@{}ll@{}}
+      \toprule
+      \textbf{MSSV} & \textbf{Họ và tên} \\
+      \midrule
+      24120472 & Trương Huệ Trí \\
+      24120415 & Vũ Lê Bá Phúc \\
+      \bottomrule
+    \end{tabular}\\[0.5cm]
+    \textbf{Phân công:}\\[0.2cm]
+    \begin{tabular}{@{}ll@{}}
+      24120472 & Cài đặt thư viện (\texttt{lib/}) \\
+      24120415 & Xây dựng ứng dụng (\texttt{app/}) \\
+    \end{tabular}
+  \end{minipage}
+
+  \vfill
+  {\large TP. Hồ Chí Minh, tháng 6 năm 2025}
+\end{titlepage}
+
+% ============================================================
+%  MỤC LỤC
+% ============================================================
+\tableofcontents
+\newpage
+
+% ============================================================
+%  1. GIỚI THIỆU ĐỀ TÀI
+% ============================================================
+\section{Giới thiệu đề tài}
+
+\subsection{Bối cảnh}
+
+Đồ án môn học CSC10004 yêu cầu mỗi cặp sinh viên: (1) tự cài đặt thư viện C++ bao gồm các cấu
+trúc dữ liệu và giải thuật đã học, và (2) xây dựng ứng dụng thực tế sử dụng ít nhất 5 trong 7
+thành phần thư viện đó một cách có ý nghĩa, không hời hợt.
+
+\subsection{Ứng dụng được xây dựng}
+
+Nhóm xây dựng \textbf{Restaurant Management System} -- hệ thống quản lý nhà hàng chạy trên
+giao diện dòng lệnh (console), viết bằng C++17. Hệ thống giải quyết bốn bài toán nghiệp vụ:
+
+\begin{enumerate}
+  \item Xác thực và quản lý tài khoản theo vai trò (Admin / Staff / Customer).
+  \item Quản lý thực đơn: thêm, xóa, tìm kiếm và hiển thị theo nhiều tiêu chí.
+  \item Quản lý đơn hàng: tạo, tra cứu, cập nhật trạng thái, thống kê doanh thu.
+  \item Lập lịch xử lý tác vụ bếp theo chính sách ưu tiên đa tầng.
+\end{enumerate}
+
+Mỗi bài toán sử dụng một cấu trúc dữ liệu hoặc giải thuật cụ thể từ thư viện tự cài đặt, phù hợp
+với từng chức năng -- minh họa cách áp dụng DSA trong một ứng dụng thực tế.
+
+% ============================================================
+%  2. YÊU CẦU VÀ PHẠM VI
+% ============================================================
+\section{Yêu cầu và phạm vi hệ thống}
+
+\subsection{Vai trò người dùng}
+
+\begin{itemize}
+  \item \textbf{Admin:} Quản lý tài khoản, quản lý thực đơn, xem toàn bộ đơn hàng và thống kê.
+  \item \textbf{Staff:} Tiếp nhận và cập nhật trạng thái đơn hàng, điều phối hàng chờ bếp.
+  \item \textbf{Customer:} Xem thực đơn, đặt món, theo dõi trạng thái đơn của mình.
+\end{itemize}
+
+\subsection{Phạm vi kỹ thuật}
+
+\begin{itemize}
+  \item Giao diện: console -- không yêu cầu GUI theo đề bài.
+  \item Ngôn ngữ: C++17. Các CTDL chính tự cài đặt trong \texttt{lib/}.
+        \texttt{std::vector} chỉ dùng làm bộ nhớ nội bộ bên trong thư viện và làm kiểu trả
+        về tạm thời -- không phải CTDL chính mà người dùng thao tác trực tiếp.
+  \item Lưu trữ: tệp văn bản thuần (\texttt{users.txt}, \texttt{menu.txt}, \texttt{orders.txt}),
+        nạp khi khởi động và lưu sau các thao tác.
+  \item Tổ chức mã: thư viện trong \texttt{lib/}, ứng dụng trong \texttt{app/}, tách biệt
+        theo yêu cầu đề bài.
+\end{itemize}
+
+\subsection{Cấu trúc thư mục}
+
+\begin{lstlisting}[language=bash, numbers=none, caption=Tổ chức thư mục mã nguồn]
+DSA_Application/
+  lib/
+    LinkedList.hpp   Stack.hpp        Queue.hpp
+    PriorityQueue.hpp  BST.hpp        AVL.hpp
+    HashTable.hpp    Algorithms.hpp   Detail.hpp
+  app/
+    models/          # User, MenuItem, Order, OrderItem, KitchenTask
+    managers/        # UserManager, MenuManager, OrderManager, KitchenManager
+    ui/              # ConsoleUI
+    utils/           # FileIO, StringUtils, TimeUtils, AlgorithmHelper
+  data/
+    users.txt  menu.txt  orders.txt
+  main.cpp
+\end{lstlisting}
+
+% ============================================================
+%  3. ÁNH XẠ NGHIỆP VỤ SANG DSA
+% ============================================================
+\section{Ánh xạ nghiệp vụ sang cấu trúc dữ liệu và giải thuật}
+
+\subsection{Bảng tổng hợp}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|p{2.8cm}|p{3.1cm}|p{2.8cm}|X|}
+\hline
+\textbf{Chức năng} & \textbf{Vấn đề dữ liệu} & \textbf{DSA chọn} & \textbf{Lý do chọn$^*$} \\
+\hline
+Đăng nhập / xác thực & Tra cứu tài khoản theo username & \texttt{HashTable} (AVL chaining) & Tra cứu theo khoá duy nhất -- O(1) trung bình theo lý thuyết \\
+\hline
+Thêm/xóa/sửa tài khoản & CRUD trên tập tài khoản & \texttt{HashTable} & insert / find / erase O(1) trung bình theo lý thuyết \\
+\hline
+Load thực đơn từ file & Sắp xếp toàn bộ danh sách & \texttt{QuickSort} & O($n \log n$) trung bình theo lý thuyết \\
+\hline
+Thêm món mới vào menu & Chèn vào danh sách gần đã có thứ tự & \texttt{InsertionSort} & O($n$) trên dữ liệu gần sắp xếp theo lý thuyết \\
+\hline
+Sắp xếp menu theo giá & Sắp xếp khi hiển thị & \texttt{HeapSort} & O($n \log n$) theo lý thuyết; dùng trong AlgorithmHelper \\
+\hline
+Sắp xếp đơn theo thời gian & Lịch sử đơn mới nhất trước & \texttt{MergeSort} & O($n \log n$) theo lý thuyết; stable sort \\
+\hline
+Tìm món theo tên & Tìm trong mảng đã sắp xếp & Binary Search (thủ công) & O($\log n$) theo lý thuyết trên mảng sắp xếp \\
+\hline
+Tạo / tìm đơn hàng & Tra cứu theo \texttt{orderId} & \texttt{BST} & O($\log n$) trung bình, O($n$) xấu nhất (xem Mục~3.3) \\
+\hline
+Xem lịch sử đơn hàng & Xuất theo thứ tự \texttt{orderId} tăng dần & BST inorder traversal & Tính chất BST: inorder cho khoá tăng dần \\
+\hline
+Hàng chờ bếp & Chọn đơn theo ưu tiên đa tầng & \texttt{PriorityQueue} (heap) & top() O(1); push/pop O($\log n$) theo lý thuyết \\
+\hline
+\end{tabularx}
+{\footnotesize $^*$ Tất cả độ phức tạp trong bảng là kết quả phân tích lý thuyết theo \cite{clrs}. Nhóm không thực hiện đo đạc hiệu năng thực nghiệm.}
+\caption{Ánh xạ nghiệp vụ -- DSA trong Restaurant Management System}
+\end{table}
+
+\subsection{Phân tích chi tiết từng ánh xạ}
+
+\subsubsection{HashTable cho quản lý tài khoản}
+
+Chức năng đăng nhập yêu cầu tra cứu tài khoản theo \texttt{username}. Vì thao tác chủ yếu là
+lookup một khoá cụ thể (không cần duyệt có thứ tự), \texttt{HashTable} phù hợp hơn mảng tuyến
+tính: theo phân tích lý thuyết \cite{clrs}, hash table với separate chaining có độ phức tạp tra cứu
+trung bình O(1) khi hệ số tải được kiểm soát.
+
+Thư viện cài đặt \texttt{HashTable<Key,T>} theo phương pháp \emph{separate chaining}, trong đó
+mỗi bucket là một cây \texttt{AVL}. Nội bộ, các bucket được lưu trong \texttt{std::vector}
+(chi tiết cài đặt bộ nhớ, không phải CTDL chính mà người dùng thao tác).
+
+\textbf{Các phương thức chính gồm:}
+\texttt{insert}, \texttt{find}, \texttt{contains}, \texttt{erase}, \texttt{clear},
+\texttt{operator[]}, \texttt{size}, \texttt{bucket\_count}.
+
+\textbf{Ánh xạ nghiệp vụ:}
+\begin{itemize}
+  \item Đăng nhập $\rightarrow$ \texttt{find(username)} + kiểm tra mật khẩu.
+  \item Tạo tài khoản $\rightarrow$ \texttt{insert(username, user)}.
+  \item Xóa tài khoản $\rightarrow$ \texttt{erase(username)}.
+  \item Đổi mật khẩu $\rightarrow$ \texttt{find(username)} rồi cập nhật trực tiếp trên pointer.
+\end{itemize}
+
+\begin{notebox}
+  \texttt{HashTable} không hỗ trợ rehashing -- không có phương thức \texttt{rehash}.
+  Nếu số lượng tài khoản tăng lớn hơn nhiều so với \texttt{BucketCount} (mặc định 16), hiệu
+  suất có thể giảm do va chạm tích lũy. Ở quy mô demo, điều này không làm sai kết quả.
+\end{notebox}
+
+\subsubsection{Mảng động + Giải thuật sắp xếp cho thực đơn}
+
+\texttt{MenuManager} lưu thực đơn trong mảng động tự quản lý (\texttt{MenuItem* items}, cấp phát
+thủ công với \texttt{new[]} và \texttt{resize()}). Mảng được chọn vì thực đơn thường duyệt toàn
+bộ và ít thay đổi, cung cấp truy cập O(1) theo chỉ mục và duyệt tuyến tính O($n$) hiệu quả.
+
+\textbf{Chiến lược sắp xếp hai pha:}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Kịch bản} & \textbf{Giải thuật} & \textbf{Hàm gọi} \\
+\midrule
+Load $n$ món từ file & \texttt{QuickSort} & \texttt{ds::quickSort(items, items+size, cmp)} \\
+Thêm $k$ món mới ($k \ll n$) & \texttt{InsertionSort} & \texttt{ds::insertionSort(items, items+size, cmp)} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Pivot của QuickSort} (\texttt{Algorithms.hpp}, dòng 101):
+
+\begin{lstlisting}
+auto pivot = *(first + (last - first) / 2);  // pivot la phan tu o giua
+\end{lstlisting}
+
+Pivot là \textbf{phần tử ở giữa} (middle element), không phải pivot ngẫu nhiên.
+
+\textbf{AlgorithmHelper.hpp} -- ngoài hai giải thuật trên, ứng dụng còn sử dụng thêm:
+\begin{itemize}
+  \item \texttt{ds::heapSort}: sắp xếp menu theo giá giảm dần (cao $\to$ thấp).
+  \item \texttt{ds::mergeSort}: sắp xếp đơn hàng theo thời gian (mới $\to$ cũ).
+  \item \texttt{ds::selectionSort}: lấy top-$N$ món đắt nhất.
+  \item \texttt{ds::bubbleSort}: sắp xếp danh sách nhỏ theo tên.
+\end{itemize}
+
+Ngoài ra, \texttt{ConsoleUI} gọi trực tiếp \texttt{ds::insertionSort} khi hiển thị danh sách món
+lúc đặt hàng (\texttt{ConsoleUI.hpp}~dòng~714).
+
+\textbf{Tìm kiếm theo tên:} \texttt{findByName} dùng binary search thủ công riêng
+(không gọi \texttt{ds::binarySearch}), kỳ vọng O($\log n$) sau khi danh sách đã sắp xếp.
+
+\subsubsection{BST cho quản lý đơn hàng}
+
+Mỗi đơn hàng có \texttt{orderId} là khoá nguyên, duy nhất. Hệ thống cần: (1) tra cứu nhanh theo
+ID, (2) xuất lịch sử theo thứ tự ID tăng dần, (3) tính doanh thu trên toàn bộ đơn.
+
+BST cung cấp cả ba nhu cầu này qua cùng một cấu trúc. Theo phân tích lý thuyết \cite{clrs}:
+\begin{itemize}
+  \item \texttt{insert(order)}: O($\log n$) trung bình, O($n$) xấu nhất (cây lệch hoàn toàn).
+  \item \texttt{find(orderId)}: O($\log n$) trung bình, O($n$) xấu nhất.
+  \item \texttt{inorder(callback)}: O($n$) -- tính chất BST: inorder cho khoá theo thứ tự tăng dần.
+  \item \texttt{remove(orderId)}: O($\log n$) trung bình.
+\end{itemize}
+
+\textbf{Các phương thức chính gồm:}
+\texttt{insert}, \texttt{remove}, \texttt{find}, \texttt{contains}, \texttt{inorder},
+\texttt{min}, \texttt{max}, \texttt{clear}, \texttt{size}, \texttt{empty}.
+BST \textbf{không có} \texttt{preorder} hay \texttt{postorder} -- chỉ có \texttt{inorder}.
+
+\begin{notebox}
+  App tạo \texttt{orderId} tăng đơn điệu bắt đầu từ 1001. Với BST không tự cân bằng, chèn
+  liên tiếp các khoá tăng dần sẽ tạo cây lệch hoàn toàn về phải, suy thoái thành O($n$) cho
+  mọi thao tác. Ở quy mô demo (số đơn nhỏ), điều này không làm sai kết quả trong các test
+  hiện có, nhưng là giới hạn kỹ thuật cần nhận thức.
+  Hướng cải thiện: thay \texttt{BST} bằng \texttt{AVL} cho \texttt{OrderManager}.
+\end{notebox}
+
+\subsubsection{PriorityQueue cho hàng chờ bếp}
+
+Bếp không xử lý đơn theo FIFO mà theo chính sách ưu tiên đa tầng. \texttt{PriorityQueue}
+được dùng để quản lý hàng chờ này: luôn trả về task có độ ưu tiên cao nhất ở \texttt{top()}.
+
+\textbf{Cài đặt thư viện:} \texttt{PriorityQueue<T, Compare>} dùng \texttt{std::vector<T>}
+làm bộ nhớ heap nội bộ. Hai thao tác cốt lõi: \texttt{sift\_up} (sau push) và \texttt{sift\_down}
+(sau pop).
+
+\textbf{Các phương thức chính gồm:} \texttt{push}, \texttt{pop}, \texttt{top}, \texttt{empty},
+\texttt{size}, \texttt{clear}.
+
+\texttt{KitchenTask::operator>} định nghĩa thứ tự ưu tiên ba tầng:
+\begin{lstlisting}
+bool operator>(const KitchenTask& other) const {
+    if (isVIP != other.isVIP)       return isVIP > other.isVIP;
+    if (priority != other.priority) return priority < other.priority;
+    return orderTime < other.orderTime;
+}
+\end{lstlisting}
+
+\textbf{Comparator sau khi sửa} (\texttt{KitchenManager.hpp}):
+\begin{lstlisting}
+struct KitchenTaskComparator {
+    // compare(a,b)=true nghia la a kem uu tien hon b => a bi day xuong
+    // => dung b > a de task uu tien cao hon (b) noi len dung
+    bool operator()(const KitchenTask& a, const KitchenTask& b) const {
+        return b > a;
+    }
+};
+\end{lstlisting}
+
+\begin{notebox}
+  Trong \texttt{ds::PriorityQueue}, semantics: \texttt{compare(a,b) = true} có nghĩa a sẽ bị
+  đẩy xuống (a kém ưu tiên hơn b). Phiên bản ban đầu dùng \texttt{return a > b} đã tạo heap
+  ngược (task ưu tiên thấp nổi lên đầu). Lỗi được phát hiện qua test và đã sửa thành
+  \texttt{return b > a}. Kết quả sau khi sửa: 3/3 test ưu tiên PASS (xem Mục~\ref{sec:pq}).
+\end{notebox}
+
+% ============================================================
+%  4. THIẾT KẾ HỆ THỐNG
+% ============================================================
+\section{Thiết kế hệ thống}
+
+\subsection{Sơ đồ phụ thuộc module}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=1.2cm and 1.4cm,
+  box/.style={rectangle, draw, rounded corners=2pt, minimum width=2.4cm,
+              minimum height=0.8cm, align=center, font=\small},
+  lib/.style={box, fill=blue!8, draw=blue!45},
+  mgr/.style={box, fill=green!8, draw=green!55!black},
+  ui/.style={box,  fill=orange!10, draw=orange!65},
+  file/.style={box, fill=gray!12, draw=gray!55},
+  arr/.style={-Stealth, thick, gray!70}
+]
+\node[lib] (ht)   {HashTable};
+\node[lib, right=1.6cm of ht]  (bst) {BST};
+\node[lib, right=1.6cm of bst] (pq)  {PriorityQueue};
+\node[lib, right=1.6cm of pq]  (alg) {Algorithms};
+\node[lib, below=0.5cm of ht, xshift=0.8cm] (avl) {AVL};
+
+\node[mgr, below=2cm of ht]           (um) {UserManager};
+\node[mgr, right=1.6cm of um]         (mm) {MenuManager};
+\node[mgr, right=1.6cm of mm]         (om) {OrderManager};
+\node[mgr, right=1.6cm of om]         (km) {KitchenManager};
+
+\node[ui,  below=1.2cm of mm, xshift=1.2cm] (cui) {ConsoleUI};
+\node[file, below=1.2cm of cui] (fio) {FileIO};
+
+\draw[arr] (avl)  -- (ht);
+\draw[arr] (ht)   -- (um);
+\draw[arr] (bst)  -- (om);
+\draw[arr] (pq)   -- (km);
+\draw[arr] (alg)  -- (mm);
+\draw[arr] (alg)  to[bend right=15] (cui);
+
+\draw[arr] (um) -- (cui);
+\draw[arr] (mm) -- (cui);
+\draw[arr] (om) -- (cui);
+\draw[arr] (km) -- (cui);
+\draw[arr] (cui) -- (fio);
+
+\node[font=\footnotesize\bfseries, above=0.25cm of ht, xshift=3.2cm] {\texttt{lib/}};
+\node[font=\footnotesize\bfseries, left=0.15cm of um] {\texttt{app/}};
+\end{tikzpicture}}
+\caption{Sơ đồ phụ thuộc module chính trong dự án}
+\end{figure}
+
+% ============================================================
+%  5. SƠ ĐỒ MINH HỌA CÁC CTDL CHÍNH
+% ============================================================
+\section{Minh họa cấu trúc dữ liệu}
+
+\subsection{HashTable với AVL separate chaining}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  bucket/.style={draw, minimum width=2.4cm, minimum height=0.6cm, font=\small},
+  node/.style={draw, circle, minimum size=0.7cm, font=\footnotesize}
+]
+\node[bucket, fill=blue!8] (b0) at (0,0)   {bucket[0]};
+\node[bucket, fill=blue!8] (b1) at (0,-0.8) {bucket[1]};
+\node[bucket, fill=blue!8] (b2) at (0,-1.6) {bucket[2]};
+\node[font=\small]          at (0,-2.2) {$\vdots$};
+\node[bucket, fill=blue!8] (bn) at (0,-2.8) {bucket[15]};
+
+\node[node, fill=green!15] (n0a) at (3.0, 0)    {\texttt{u1}};
+\node[node, fill=green!15] (n1a) at (3.0, -0.8)  {\texttt{u2}};
+\node[node, fill=green!15] (n1b) at (4.0, -0.8)  {\texttt{u3}};
+\node[node, fill=green!15] (n1c) at (3.5, -1.5)  {\texttt{u5}};
+
+\draw[-Stealth] (b0) -- (n0a) node[midway, above, font=\footnotesize] {AVL};
+\draw[-Stealth] (b1) -- (n1a) node[midway, above, font=\footnotesize] {AVL};
+\draw[-] (n1a) -- (n1b);
+\draw[-] (n1a) -- (n1c);
+
+\node[bucket, fill=gray!8] at (3.0,-2.8) {\small (empty)};
+\draw[-Stealth] (bn) -- (3.0,-2.8);
+
+\node[font=\footnotesize\itshape, below=0.1cm of bn, xshift=2.4cm]
+  {Mỗi bucket là một cây AVL$<$pair$<$Key,T$>>$};
+\end{tikzpicture}
+\caption{HashTable với AVL separate chaining (16 bucket mặc định, không rehashing)}
+\end{figure}
+
+\subsection{BST lưu Order theo orderId -- inorder traversal}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  bnode/.style={draw, circle, minimum size=0.9cm, font=\small, fill=orange!12}
+]
+\node[bnode] (r) at (0,0) {1003};
+\node[bnode] (l) at (-1.8,-1.2) {1001};
+\node[bnode] (rr) at (1.8,-1.2) {1005};
+\node[bnode] (lr) at (-0.9,-2.4) {1002};
+\node[bnode] (rl) at (0.9,-2.4) {1004};
+
+\draw (r)--(l); \draw (r)--(rr); \draw (l)--(lr); \draw (rr)--(rl);
+
+\node[font=\footnotesize, right=0.2cm of rr] {$\leftarrow$ root nếu chèn theo thứ tự này};
+
+\draw[-Stealth, dashed, gray!70] (-3.2,-3.2) -- (-0.4,-3.2)
+  node[midway, below, font=\footnotesize] {inorder: 1001 1002 1003 1004 1005};
+\end{tikzpicture}
+\caption{BST minh họa inorder traversal -- trường hợp dữ liệu không tuần tự. \\
+  \small Lưu ý: trong app thực, orderId được tạo tăng dần (1001, 1002, \ldots) nên BST có
+  thể lệch phải hoàn toàn.}
+\end{figure}
+
+\subsection{Max-heap cho KitchenTask}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  hnode/.style={draw, rectangle, rounded corners=2pt, minimum width=3.6cm,
+                minimum height=0.75cm, font=\footnotesize, fill=red!8}
+]
+\node[hnode] (top) at (0,0)        {VIP, pri=0, T=9:00};
+\node[hnode] (l)   at (-3.2,-1.6)  {VIP, pri=1, T=9:05};
+\node[hnode] (rr)  at (3.2,-1.6)   {non-VIP, pri=0, T=9:00};
+\node[hnode] (ll)  at (-5.6,-3.4)  {non-VIP, pri=1, T=9:10};
+\node[hnode] (lr)  at (-0.8,-3.4)  {VIP, pri=1, T=9:15};
+
+\draw (top)--(l); \draw (top)--(rr); \draw (l)--(ll); \draw (l)--(lr);
+
+\node[font=\footnotesize\itshape, below=0.4cm of ll, xshift=2.4cm]
+  {Thứ tự pop lý thuyết: VIP, pri thấp, sớm nhất trước};
+\end{tikzpicture}
+\caption{Cấu trúc heap cho KitchenTask theo thứ tự ưu tiên dự kiến \\
+  \small (thứ tự thực tế phụ thuộc vào chiều comparator -- xem Mục~\ref{sec:pq})}
+\end{figure}
+
+% ============================================================
+%  6. PHÂN TÍCH TỪNG CTDL / GIẢI THUẬT
+% ============================================================
+\section{Phân tích từng cấu trúc dữ liệu và giải thuật}
+\label{sec:analysis}
+
+\subsection{HashTable với AVL separate chaining}
+
+\paragraph{Độ phức tạp lý thuyết.}
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Thao tác} & \textbf{Trung bình} & \textbf{Xấu nhất} & \textbf{Phương thức} \\
+\midrule
+\texttt{insert} & O(1) & O($\log n$)$^*$ & \texttt{HashTable.hpp:37} \\
+\texttt{find}   & O(1) & O($\log n$)$^*$ & \texttt{HashTable.hpp:61} \\
+\texttt{erase}  & O(1) & O($\log n$)$^*$ & \texttt{HashTable.hpp:75} \\
+\bottomrule
+\end{tabular}
+\end{table}
+{\footnotesize $^*$ Xấu nhất trong một bucket (AVL) khi tất cả khoá hash về cùng bucket.}
+
+\subsection{QuickSort và InsertionSort}
+
+\paragraph{QuickSort} (\texttt{Algorithms.hpp:96--125}): chia-và-trị, pivot là phần tử ở giữa
+(\texttt{*(first + (last-first)/2)}). Theo \cite{clrs}: O($n \log n$) trung bình, O($n^2$) xấu nhất
+(khi pivot luôn chia không đều -- ví dụ dữ liệu đã sắp xếp với pivot đầu/cuối; pivot giữa giảm
+thiểu rủi ro này).
+
+\paragraph{InsertionSort} (\texttt{Algorithms.hpp:42--55}): duyệt từ đầu đến cuối, chèn từng
+phần tử vào đúng vị trí trong phần đã sắp xếp. Theo \cite{clrs}: O($n$) trên dữ liệu gần có thứ tự
+(mỗi phần tử chỉ dịch chuyển ít bước), O($n^2$) xấu nhất.
+
+\paragraph{Lý do chiến lược hai pha.}
+QuickSort khi load $n$ món từ file (O($n \log n$) trung bình theo lý thuyết); InsertionSort khi
+thêm $k$ món mới vào danh sách gần sắp xếp (O($n$) trung bình theo lý thuyết khi $k \ll n$).
+Đây là lập luận dựa trên phân tích lý thuyết; nhóm không thực hiện đo đạc thực nghiệm.
+
+\subsection{BST}
+
+\paragraph{Độ phức tạp lý thuyết \cite{clrs}.}
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Thao tác} & \textbf{Trung bình} & \textbf{Xấu nhất} & \textbf{Phương thức} \\
+\midrule
+\texttt{insert} & O($\log n$) & O($n$) & \texttt{BST.hpp:119} \\
+\texttt{find}   & O($\log n$) & O($n$) & \texttt{BST.hpp:140} \\
+\texttt{remove} & O($\log n$) & O($n$) & \texttt{BST.hpp:133} \\
+\texttt{inorder} & O($n$) & O($n$) & \texttt{BST.hpp:174} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Trường hợp xấu O($n$) xảy ra khi cây lệch hoàn toàn (ví dụ: chèn khoá tăng đơn điệu) --
+đây là rủi ro được xác nhận qua test với orderId 1001..1007 (xem Mục~7.2).
+
+\subsection{PriorityQueue}
+
+\paragraph{Độ phức tạp lý thuyết.}
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Thao tác} & \textbf{Độ phức tạp} & \textbf{Phương thức} \\
+\midrule
+\texttt{push} & O($\log n$) -- sift\_up & \texttt{PriorityQueue.hpp:62} \\
+\texttt{top}  & O(1) & \texttt{PriorityQueue.hpp:60} \\
+\texttt{pop}  & O($\log n$) -- sift\_down & \texttt{PriorityQueue.hpp:72} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Ghi chú về comparator.}
+Với \texttt{std::less<T>} (mặc định), \texttt{ds::PriorityQueue} là max-heap theo \cite{clrs}.
+\texttt{KitchenTaskComparator} dùng \texttt{return b > a}: khi b ưu tiên hơn a, comparator trả
+\texttt{true} → a bị đẩy xuống → b nổi lên đúng vị trí. Hành vi này đã được xác nhận qua test
+suite: 3/3 test kiểm tra thứ tự ưu tiên ba tầng đều PASS (xem Mục~\ref{sec:pq}).
+
+\subsection{AVL (dùng nội bộ trong HashTable)}
+
+AVL (\texttt{lib/AVL.hpp}) là BST tự cân bằng: sau mỗi insert hoặc remove, cây thực hiện phép
+xoay qua \texttt{rebalance()} để duy trì $|\text{balance\_factor}| \leq 1$. Theo \cite{clrs},
+điều kiện này đảm bảo chiều cao O($\log n$) -- mọi thao tác find/insert/remove đều
+O($\log n$) trong mọi trường hợp. Dùng làm bucket trong HashTable thay vì danh sách liên kết.
+
+API: \texttt{insert}, \texttt{remove}, \texttt{find}, \texttt{contains}, \texttt{inorder},
+\texttt{min}, \texttt{max}, \texttt{clear}, \texttt{size}.
+
+% ============================================================
+%  7. KIỂM THỬ
+% ============================================================
+\section{Kiểm thử thư viện}
+
+Toàn bộ test được thực hiện qua file \texttt{test\_lib.cpp} -- gọi trực tiếp các hàm trong
+\texttt{lib/} với input và expected output xác định, không qua UI.
+
+\textbf{Compile và chạy:}
+\begin{lstlisting}[language=bash, numbers=none]
+g++ -std=c++17 -I. test_lib.cpp -o test_lib && ./test_lib
+\end{lstlisting}
+
+\textbf{Nguồn gốc test case.} Các test được xây dựng từ ba nguồn: (1) đặc tả API của mỗi cấu
+trúc dữ liệu (các phương thức \texttt{insert}, \texttt{find}, \texttt{remove}, \texttt{size},
+\texttt{clear}, v.v.\ được khai báo trong \texttt{lib/}); (2) tính chất cốt lõi theo lý thuyết
+DSA (ví dụ: inorder traversal của BST trả khoá theo thứ tự tăng dần \cite{clrs}, PriorityQueue
+luôn trả phần tử ưu tiên cao nhất); (3) các trường hợp biên phổ biến (phần tử không tồn tại,
+cấu trúc rỗng, thao tác trùng lặp).
+
+\textbf{Giới hạn của PASS.} Kết quả PASS xác nhận tính đúng đắn chức năng cho các trường hợp
+đã kiểm tra. PASS không phản ánh hiệu năng, độ phức tạp thực nghiệm, hay hành vi với dữ liệu
+ngoài phạm vi test. Mọi nhận định về Big-O trong báo cáo là phân tích lý thuyết có nguồn \cite{clrs}.
+
+\begin{passbox}
+\textbf{Kết quả tổng hợp: 70 PASS \ | \ 0 FAIL}\\
+HashTable: 19/19 \textbf{PASS} \quad
+BST: 17/17 \textbf{PASS} \quad
+PriorityQueue: 11/11 \textbf{PASS} \quad
+Algorithms: 16/16 \textbf{PASS} \quad
+AVL: 9/9 \textbf{PASS}
+\end{passbox}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\textwidth]{img/00_summary.png}
+\caption{Tổng hợp kết quả test suite -- chạy thực tế từ \texttt{test\_lib.exe}}
+\end{figure}
+
+\subsection{HashTable -- 19/19 PASS}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{img/01_hashtable.png}
+\caption{HashTable: toàn bộ 19 test PASS}
+\end{figure}
+
+\begin{longtable}{|p{4cm}|p{4.5cm}|c|}
+\hline
+\textbf{Test case} & \textbf{Kết quả mong đợi} & \textbf{Thực tế} \\
+\hline
+\texttt{size()} sau 3 inserts & 3 & \textbf{PASS} \\
+\hline
+\texttt{find("alice")} & != nullptr, value == 10 & \textbf{PASS} \\
+\hline
+\texttt{find("nobody")} & nullptr & \textbf{PASS} \\
+\hline
+\texttt{contains("bob")} / \texttt{contains("ghost")} & true / false & \textbf{PASS} \\
+\hline
+Duplicate insert \texttt{"alice"} với value mới & size không đổi, value cập nhật & \textbf{PASS} \\
+\hline
+\texttt{erase("bob")} & true, size giảm, find trả nullptr & \textbf{PASS} \\
+\hline
+\texttt{erase("ghost")} (không tồn tại) & false, size không đổi & \textbf{PASS} \\
+\hline
+Update password qua pointer & \texttt{*find() = newpass} hoạt động & \textbf{PASS} \\
+\hline
+\texttt{find} user không tồn tại (login guard) & nullptr & \textbf{PASS} \\
+\hline
+\texttt{clear()} & size=0, find trả nullptr & \textbf{PASS} \\
+\hline
+\end{longtable}
+
+\subsection{BST -- 17/17 PASS}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{img/02_bst.png}
+\caption{BST: 17/17 PASS -- bao gồm cả demo degeneration với orderId tuần tự}
+\end{figure}
+
+\begin{longtable}{|p{4.2cm}|p{5.2cm}|c|}
+\hline
+\textbf{Test case} & \textbf{Kết quả mong đợi} & \textbf{Thực tế} \\
+\hline
+Insert 5 đơn (không tuần tự), \texttt{find(1003)} & value == 300.0 & \textbf{PASS} \\
+\hline
+\texttt{find(9999)} & nullptr & \textbf{PASS} \\
+\hline
+Inorder (5 khóa không tuần tự) & 1001 1002 1003 1004 1005 (tăng dần) & \textbf{PASS} \\
+\hline
+Tính tổng qua inorder lambda & 1500.0 & \textbf{PASS} \\
+\hline
+Remove node lá (1001) & true, find=nullptr, size=4 & \textbf{PASS} \\
+\hline
+Remove node một con (1002) & true, find=nullptr, size=3 & \textbf{PASS} \\
+\hline
+Remove node hai con (1003, gốc) & true, successor thay thế đúng & \textbf{PASS} \\
+\hline
+Inorder sau 3 remove & \texttt{\{1004,1005\}} & \textbf{PASS} \\
+\hline
+\texttt{remove(9999)} & false, size không đổi & \textbf{PASS} \\
+\hline
+Insert tuần tự 1001..1007, inorder & \texttt{\{1001..1007\}} đúng & \textbf{PASS} \\
+\hline
+\end{longtable}
+
+\begin{notebox}
+\textbf{Ghi nhận degeneration (từ test output):}\\
+Chèn tuần tự orderId 1001..1007 tạo cây lệch hoàn toàn về phải. Chiều cao = 7 = O($n$).
+Inorder vẫn đúng về mặt logic, nhưng \texttt{find()} phải duyệt 7 bước thay vì $\lceil \log_2 7 \rceil = 3$.
+\end{notebox}
+
+\subsection{PriorityQueue -- 11/11 PASS}
+\label{sec:pq}
+
+\subsubsection{Sanity check: max-heap với \texttt{std::less<int>} -- 4/4 PASS}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{img/03a_pq_sanity.png}
+\caption{PriorityQueue với \texttt{std::less<int>}: max-heap hoạt động đúng}
+\end{figure}
+
+\begin{lstlisting}[numbers=none, caption=Output thực tế từ test\_lib.exe]
+push {3,1,4,1,5} -> top() == 5       [PASS]
+pop order = {5,4,3,1,1}              [PASS]  (max-heap xac nhan)
+pop() on empty -> still empty        [PASS]
+\end{lstlisting}
+
+Lý do test: kiểm tra tính chất heap cơ bản (phần tử lớn nhất luôn ở đầu) theo định nghĩa
+trong \cite{clrs}.
+
+\subsubsection{KitchenTask -- bug phát hiện, sửa, xác nhận: 3/3 PASS}
+
+\textbf{Bug phát hiện.} Phiên bản ban đầu của \texttt{KitchenTaskComparator} dùng
+\texttt{return a > b}. Trong \texttt{ds::PriorityQueue}, \texttt{compare(a,b)=true} có nghĩa
+a bị đẩy xuống. Vì \texttt{a > b} là true khi a ưu tiên hơn b, task ưu tiên cao bị đẩy
+xuống -- tạo heap ngược. Quan sát từ test (xem ảnh minh họa):
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{img/03b_pq_bug.png}
+\caption{Minh họa hành vi sai khi dùng \texttt{return a > b}: non-VIP nổi lên đầu heap}
+\end{figure}
+
+\textbf{Sửa và xác nhận.} Đổi comparator thành \texttt{return b > a}
+(\texttt{KitchenManager.hpp}, đã áp dụng vào production code).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{img/03c_pq_fixed.png}
+\caption{Sau khi sửa (\texttt{return b > a}): thứ tự ưu tiên ba tầng đúng, 3/3 PASS}
+\end{figure}
+
+\begin{lstlisting}[numbers=none, caption=Output thực tế sau khi sửa comparator]
+[PASS] VIP on top over non-VIP    top(): orderId=1003  isVIP=1
+[PASS] VIP pri=0 on top over pri=1  top(): orderId=2001  priority=0
+[PASS] Earlier orderTime on top    top(): orderId=3001  orderTime=1000
+
+Full pop order:
+#1003(VIP=1,pri=0,t=1000) #1004(VIP=1,pri=0,t=1010)
+#1005(VIP=1,pri=1,t=1000) #1001(VIP=0,pri=0,t=1000)
+#1002(VIP=0,pri=0,t=1005)
+\end{lstlisting}
+
+Thứ tự pop khớp với yêu cầu nghiệp vụ: VIP trước, giai đoạn thấp hơn trước, đặt sớm hơn trước.
+
+\subsection{Algorithms -- 16/16 PASS}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{img/04_algorithms.png}
+\caption{6 giải thuật sắp xếp + 2 tìm kiếm -- 16/16 PASS}
+\end{figure}
+
+\begin{longtable}{|p{4.5cm}|p{4cm}|c|}
+\hline
+\textbf{Test case} & \textbf{Kết quả} & \textbf{Thực tế} \\
+\hline
+\texttt{quickSort} \{5,2,8,1,9,3,7,4,6,0\} & 0 1 2 3 4 5 6 7 8 9 & \textbf{PASS} \\
+\hline
+\texttt{insertionSort} (same input) & 0 1 2 3 4 5 6 7 8 9 & \textbf{PASS} \\
+\hline
+\texttt{heapSort} (same input) & 0 1 2 3 4 5 6 7 8 9 & \textbf{PASS} \\
+\hline
+\texttt{mergeSort} (same input) & 0 1 2 3 4 5 6 7 8 9 & \textbf{PASS} \\
+\hline
+\texttt{selectionSort} (same input) & 0 1 2 3 4 5 6 7 8 9 & \textbf{PASS} \\
+\hline
+\texttt{bubbleSort} (same input) & 0 1 2 3 4 5 6 7 8 9 & \textbf{PASS} \\
+\hline
+\texttt{quickSort} với cmp ngược (desc) & 9 8 7 6 5 4 3 2 1 0 & \textbf{PASS} \\
+\hline
+\texttt{insertionSort} dữ liệu gần sắp xếp & đúng thứ tự & \textbf{PASS} \\
+\hline
+\texttt{quickSort} chuỗi ký tự & ``Banh Mi'' ``Bun Bo'' ``Com Tam'' \ldots & \textbf{PASS} \\
+\hline
+\texttt{linearSearch} phần tử tồn tại & tìm thấy 7 & \textbf{PASS} \\
+\hline
+\texttt{linearSearch} phần tử không có & trả \texttt{end} & \textbf{PASS} \\
+\hline
+\texttt{binarySearch} phần tử tồn tại (7, 1, 15) & tìm thấy đúng & \textbf{PASS} \\
+\hline
+\texttt{binarySearch} phần tử không có (6) & trả \texttt{last} gốc & \textbf{PASS} \\
+\hline
+\end{longtable}
+
+\begin{notebox}
+\textbf{Sửa đã áp dụng cho \texttt{ds::binarySearch}:}
+Phiên bản ban đầu trả về \emph{insertion point} (vị trí hẹp dần của \texttt{last}) khi không
+tìm thấy, thay vì \texttt{last} gốc. Đã sửa bằng cách lưu \texttt{original\_last} trước vòng
+lặp và trả về nó khi không tìm thấy. Sau sửa: PASS.\\
+Lưu ý: \texttt{MenuManager::findByName} dùng binary search thủ công riêng (trả \texttt{nullptr}
+khi không tìm thấy), không gọi \texttt{ds::binarySearch} -- sửa này không ảnh hưởng đến app.
+\end{notebox}
+
+\subsection{AVL -- 9/9 PASS}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{img/05_avl.png}
+\caption{AVL: insert tuần tự vẫn cân bằng, remove đúng -- 9/9 PASS}
+\end{figure}
+
+\begin{longtable}{|p{4.5cm}|p{4cm}|c|}
+\hline
+\textbf{Test case} & \textbf{Kết quả} & \textbf{Thực tế} \\
+\hline
+Insert tuần tự 1..7, inorder & \{1,2,3,4,5,6,7\} & \textbf{PASS} \\
+\hline
+\texttt{find(4)}, \texttt{find(99)} & 4 / nullptr & \textbf{PASS} \\
+\hline
+\texttt{remove(4)}, inorder sau đó & \{1,2,3,5,6,7\} & \textbf{PASS} \\
+\hline
+\texttt{remove(99)} & false & \textbf{PASS} \\
+\hline
+\end{longtable}
+
+% ============================================================
+%  8. ĐÁNH GIÁ MỨC ĐỘ ĐÁP ỨNG
+% ============================================================
+\section{Đánh giá mức độ đáp ứng yêu cầu}
+
+\subsection{Thành phần thư viện được sử dụng}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{clp{3.4cm}X}
+\toprule
+\textbf{\#} & \textbf{Thành phần} & \textbf{Nơi sử dụng} & \textbf{Vai trò} \\
+\midrule
+1 & \texttt{HashTable<K,V>} & \texttt{UserManager} & Đăng nhập, CRUD tài khoản \\
+2 & \texttt{AVL<T>} & Nội bộ \texttt{HashTable} & Separate chaining per bucket \\
+3 & \texttt{Algorithms.hpp} & \texttt{MenuManager}, \texttt{AlgorithmHelper}, \texttt{ConsoleUI} &
+  QuickSort, InsertionSort, HeapSort, MergeSort, SelectionSort, BubbleSort \\
+4 & \texttt{BST<T>} & \texttt{OrderManager} & CRUD đơn hàng + inorder traversal \\
+5 & \texttt{PriorityQueue<T>} & \texttt{KitchenManager} & Lập lịch ưu tiên hàng chờ bếp \\
+\midrule
+-- & \texttt{LinkedList<T>} & -- & Không sử dụng \\
+-- & \texttt{Stack<T>} & -- & Không sử dụng \\
+-- & \texttt{Queue<T>} & -- & Không sử dụng \\
+\bottomrule
+\end{tabularx}
+\caption{5/7 thành phần thư viện được sử dụng trong các module ứng dụng}
+\end{table}
+
+\subsection{Bug phát hiện qua test và đã sửa}
+
+\begin{enumerate}
+  \item \textbf{KitchenTaskComparator bị ngược chiều.}
+        Phiên bản ban đầu (\texttt{return a > b}) tạo heap ngược: non-VIP nổi lên đầu.
+        Phát hiện qua test: khi push VIP và non-VIP vào cùng queue, \texttt{top()} trả non-VIP.
+        \textbf{Đã sửa:} đổi thành \texttt{return b > a} trong \texttt{KitchenManager.hpp}.
+        \textbf{Xác nhận:} 3/3 test ưu tiên PASS sau khi sửa (xem Mục~\ref{sec:pq}).
+
+  \item \textbf{\texttt{ds::binarySearch} trả insertion point khi không tìm thấy.}
+        Phiên bản ban đầu hẹp dần biến \texttt{last} trong vòng lặp và trả giá trị đã hẹp,
+        không phải \texttt{last} gốc. Phát hiện qua test: tìm 6 trong \{1,3,5,7,...\}
+        trả vị trí của 7, không phải \texttt{end}.
+        \textbf{Đã sửa:} lưu \texttt{original\_last} trước vòng lặp, trả về nó khi không tìm thấy
+        (\texttt{lib/Algorithms.hpp}).
+        \textbf{Xác nhận:} PASS sau khi sửa. Không ảnh hưởng đến app vì
+        \texttt{MenuManager} dùng binary search thủ công riêng.
+\end{enumerate}
+
+\subsection{Hạn chế kỹ thuật còn tồn tại}
+
+\begin{enumerate}
+  \item \textbf{BST suy thoái với orderId tăng đơn điệu.}
+        Quan sát từ test: chèn 1001..1007 tuần tự tạo cây lệch hoàn toàn về phải -- mọi
+        thao tác find phải duyệt tất cả 7 nút. Theo lý thuyết \cite{clrs}, trường hợp này
+        có chiều cao O($n$). Inorder vẫn cho kết quả đúng. Giải pháp: thay BST bằng AVL
+        trong \texttt{OrderManager}.
+
+  \item \textbf{HashTable không có rehashing.}
+        Số bucket cố định (mặc định 16). Ở quy mô demo, số tài khoản nhỏ nên không làm sai
+        kết quả trong các test hiện có.
+
+  \item \textbf{Mọi nhận định về Big-O là lý thuyết, không phải đo đạc thực nghiệm.}
+        Nhóm không thực hiện benchmark hiệu năng. Tất cả độ phức tạp được trích dẫn từ
+        \cite{clrs} và áp dụng theo lý thuyết cấu trúc code.
+\end{enumerate}
+
+% ============================================================
+%  KẾT LUẬN
+% ============================================================
+\section*{Kết luận}
+\addcontentsline{toc}{section}{Kết luận}
+
+Restaurant Management System minh họa cách áp dụng DSA trong một ứng dụng thực tế: mỗi bài
+toán nghiệp vụ sử dụng một cấu trúc dữ liệu hoặc giải thuật phù hợp với từng chức năng.
+Hệ thống sử dụng 5/7 thành phần thư viện trong các module nghiệp vụ: \texttt{UserManager}
+dùng \texttt{HashTable}, \texttt{OrderManager} dùng \texttt{BST}, \texttt{KitchenManager}
+dùng \texttt{PriorityQueue}, \texttt{MenuManager}/\texttt{AlgorithmHelper}/\texttt{ConsoleUI}
+dùng các thuật toán trong \texttt{Algorithms.hpp}, và \texttt{HashTable} dùng \texttt{AVL}
+cho các bucket.
+
+Quá trình kiểm thử phát hiện hai bug (comparator PriorityQueue bị ngược chiều;
+\texttt{ds::binarySearch} trả sai giá trị khi không tìm thấy) -- cả hai đã được sửa và xác nhận
+lại qua test suite (70/70 PASS). Rủi ro kỹ thuật còn lại (BST suy thoái với orderId tăng đơn
+điệu) được ghi nhận là hạn chế thiết kế, không làm sai kết quả trong các test hiện có.
+
+Mọi nhận định về độ phức tạp trong báo cáo là phân tích lý thuyết theo \cite{clrs}; nhóm không
+thực hiện đo đạc hiệu năng thực nghiệm.
+
+% ============================================================
+%  TÀI LIỆU THAM KHẢO
+% ============================================================
+\begin{thebibliography}{9}
+\bibitem{clrs}
+  T.~H. Cormen, C.~E. Leiserson, R.~L. Rivest, C.~Stein.
+  \textit{Introduction to Algorithms}, 4th ed.
+  MIT Press, 2022.
+
+\bibitem{stroustrup}
+  B.~Stroustrup.
+  \textit{The C++ Programming Language}, 4th ed.
+  Addison-Wesley, 2013.
+
+\bibitem{cppreference}
+  cppreference.com -- C++ Templates.
+  \url{https://en.cppreference.com/w/cpp/language/templates}
+\end{thebibliography}
+
+\end{document}

@@ -43,7 +43,7 @@ private:
         } else if (less(nodeKey, key)) {
             node->right = insert_node(node->right, std::move(value), inserted);
         } else {
-            node->value = std::move(value);
+            node->value = std::move(value);  // duplicate key: overwrite existing value
         }
         return node;
     }
@@ -116,6 +116,10 @@ public:
         size_ = 0;
     }
 
+    // Returns true if key is new, false if key existed (existing value is overwritten).
+    // Warning: monotone key sequences produce a degenerate right- (or left-) skewed
+    // tree with O(n) height, making all operations O(n). Use AVL if keys may arrive
+    // in sorted order.
     bool insert(const T& value) {
         bool inserted = false;
         root_ = insert_node(root_, value, inserted);

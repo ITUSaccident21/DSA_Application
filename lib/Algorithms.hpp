@@ -178,8 +178,12 @@ InputIt linearSearch(InputIt first, InputIt last, const T& value) {
     return last;
 }
 
+// Tìm kiếm nhị phân: trả về iterator trỏ đến phần tử nếu tìm thấy,
+// hoặc `last` gốc nếu không tìm thấy.
+// Yêu cầu: [first, last) đã được sắp xếp theo Compare.
 template <typename RandomIt, typename T, typename Compare = std::less<typename std::iterator_traits<RandomIt>::value_type>>
 RandomIt binarySearch(RandomIt first, RandomIt last, const T& value, Compare compare = Compare{}) {
+    auto original_last = last;
     while (first < last) {
         auto mid = first + (last - first) / 2;
         if (compare(*mid, value)) {
@@ -190,7 +194,7 @@ RandomIt binarySearch(RandomIt first, RandomIt last, const T& value, Compare com
             return mid;
         }
     }
-    return last;
+    return original_last;
 }
 
 } // namespace ds

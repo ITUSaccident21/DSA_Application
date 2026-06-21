@@ -9,19 +9,16 @@
 
 int main() {
     try {
-        // Khởi tạo các managers
         UserManager userManager;
         MenuManager menuManager;
         OrderManager orderManager;
         KitchenManager kitchenManager;
 
-        // Tạo đường dẫn file dữ liệu
         std::string dataDir = "./data/";
         std::string usersFile = dataDir + "users.txt";
         std::string menuFile = dataDir + "menu.txt";
         std::string ordersFile = dataDir + "orders.txt";
 
-        // Load dữ liệu từ file
         std::cout << "Loading data...\n";
         FileIO::loadUsers(usersFile, userManager);
         FileIO::loadMenu(menuFile, menuManager);
@@ -32,19 +29,15 @@ int main() {
         std::cout << "Menu items: " << menuManager.getSize() << "\n";
         std::cout << "Orders: " << orderManager.getOrderCount() << "\n\n";
 
-        // Khởi tạo UI
         ConsoleUI ui(userManager, menuManager, orderManager, kitchenManager);
-
-        // Chạy ứng dụng
         ui.run();
 
-        // Lưu dữ liệu (đoạn này sẽ không bao giờ được đạt tới vì ui.run() là vòng lặp vô hạn)
+        // Unreachable: ui.run() loops until the process exits.
+        // Data is saved inside ConsoleUI before exit.
         std::cout << "Saving data...\n";
         FileIO::saveUsers(usersFile, userManager);
         FileIO::saveMenu(menuFile, menuManager);
         FileIO::saveOrders(ordersFile, orderManager);
-
-        std::cout << "Data saved successfully!\n";
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";

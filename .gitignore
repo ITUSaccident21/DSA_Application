@@ -1,0 +1,31 @@
+# Compiled binaries
+*.exe
+*.out
+restaurant_app
+restaurant_app_win.exe
+test_lib
+test_lib.exe
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Generated report PDF (compile from Report.tex)
+Report.pdf
+
+# Generated proof images (run gen_images.py)
+img/
+
+# Test output log
+test_output.txt
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

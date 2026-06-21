@@ -6,15 +6,13 @@
 #include <sstream>
 #include <iomanip>
 
-// Các hàm tiện ích xử lý thời gian
 class TimeUtils {
 public:
-    // Lấy thời gian hiện tại
     static std::time_t now() {
         return std::time(nullptr);
     }
 
-    // Chuyển đổi timestamp thành string (định dạng: YYYY-MM-DD HH:MM:SS)
+    // Output format: "YYYY-MM-DD HH:MM:SS"
     static std::string timestampToString(std::time_t timestamp) {
         std::tm* timeinfo = std::localtime(&timestamp);
         std::ostringstream oss;
@@ -22,7 +20,6 @@ public:
         return oss.str();
     }
 
-    // Chuyển đổi string thành timestamp
     static std::time_t stringToTimestamp(const std::string& str) {
         std::tm timeinfo = {};
         std::istringstream iss(str);
@@ -30,22 +27,22 @@ public:
         return std::mktime(&timeinfo);
     }
 
-    // Lấy thời gian hiện tại dưới dạng string
     static std::string nowString() {
         return timestampToString(now());
     }
 
-    // Tính khoảng thời gian giữa hai timestamp (tính bằng giây)
+    // Returns absolute difference in seconds.
     static long long timeDifference(std::time_t t1, std::time_t t2) {
         return std::abs(std::difftime(t1, t2));
     }
 
-    // Kiểm tra xem hai thời gian có cùng ngày không
     static bool isSameDay(std::time_t t1, std::time_t t2) {
-        std::tm* timeinfo1 = std::localtime(&t1);
-        std::tm* timeinfo2 = std::localtime(&t2);
-        return timeinfo1->tm_year == timeinfo2->tm_year &&
-               timeinfo1->tm_mon == timeinfo2->tm_mon &&
-               timeinfo1->tm_mday == timeinfo2->tm_mday;
+        // localtime() returns a pointer to a shared static buffer — must copy
+        // the first result before calling localtime() a second time.
+        std::tm tm1 = *std::localtime(&t1);
+        std::tm tm2 = *std::localtime(&t2);
+        return tm1.tm_year == tm2.tm_year &&
+               tm1.tm_mon  == tm2.tm_mon  &&
+               tm1.tm_mday == tm2.tm_mday;
     }
 };

@@ -5,20 +5,13 @@
 #include <iostream>
 #include <vector>
 
-// KitchenManager quản lý hàng chờ bếp sử dụng PriorityQueue
-//
-// Tại sao PriorityQueue?
-// - Cần ưu tiên: VIP > thời gian đặt > trạng thái
-// - Lấy công việc có độ ưu tiên cao nhất (O(1))
-// - Thêm công việc mới (O(log n))
-// - Không cần tìm kiếm hay duyệt - chỉ cần lấy top task
-// - PriorityQueue là cấu trúc tối ưu cho use case này
-
-// Custom comparator: KitchenTask với độ ưu tiên cao hơn sẽ ở trên
+// Comparator for ds::PriorityQueue<KitchenTask>.
+// Semantics: compare(a, b) = true  →  a sinks (b has higher priority).
+// We want higher-priority tasks to float to top, so:
+//   compare(a, b) = true  ⟺  a is less preferred than b  ⟺  b > a
 struct KitchenTaskComparator {
     bool operator()(const KitchenTask& a, const KitchenTask& b) const {
-        // a > b means a has higher priority (should be on top)
-        return a > b;
+        return b > a;  // b > a: b ưu tiên hơn a => a bị đẩy xuống => b nổi lên
     }
 };
 
@@ -29,49 +22,43 @@ private:
 public:
     KitchenManager() {}
 
-    // Thêm công việc vào hàng chờ
     void addTask(const KitchenTask& task) {
         queue.push(task);
     }
 
-    // Lấy công việc có độ ưu tiên cao nhất
+    // Precondition: !isEmpty(). Undefined behavior if called on empty queue.
     const KitchenTask& getTopTask() const {
         return queue.top();
     }
 
-    // Lấy và xóa công việc có độ ưu tiên cao nhất
+    // Precondition: !isEmpty().
     KitchenTask popTask() {
         KitchenTask top = queue.top();
         queue.pop();
         return top;
     }
 
-    // Kiểm tra xem hàng chờ có công việc không
     bool isEmpty() const {
         return queue.empty();
     }
 
-    // Lấy số lượng công việc đang chờ
     std::size_t getQueueSize() const {
         return queue.size();
     }
 
-    // Xóa tất cả công việc
     void clear() {
         queue.clear();
     }
 
-    // Lấy danh sách công việc (để hiển thị)
-    // Note: Do PriorityQueue không cung cấp iterator, ta phải extract toàn bộ
+    // Returns tasks in priority order via a temporary copy — O(n log n).
+    // PriorityQueue has no iterator; a full copy-and-drain is the only option.
     std::vector<KitchenTask> getAllTasks() {
         std::vector<KitchenTask> tasks;
         ds::PriorityQueue<KitchenTask, KitchenTaskComparator> tempQueue = queue;
-        
         while (!tempQueue.empty()) {
             tasks.push_back(tempQueue.top());
             tempQueue.pop();
         }
-        
         return tasks;
     }
 };

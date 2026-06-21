@@ -10,6 +10,12 @@
 
 namespace ds {
 
+// Fixed-bucket hash table with AVL-tree separate chaining.
+// BucketCount is fixed at construction — no rehashing.
+// Performance degrades when total entries >> BucketCount (default 16).
+// Each bucket is an AVL tree: worst-case O(log n) per bucket vs O(n) for a list.
+//
+// insert() semantics: returns true on new key, false on duplicate (value updated).
 template <typename Key, typename T, std::size_t BucketCount = 16, typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>>
 class HashTable {
 private:
