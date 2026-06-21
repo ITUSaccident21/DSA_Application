@@ -60,6 +60,14 @@ public:
         return users.erase(username);
     }
 
+    std::vector<User> getAllUsers() const {
+        std::vector<User> result;
+        users.forEach([&](const std::string& key, const User& user) {
+            result.push_back(user);
+        });
+        return result;
+    }
+
     std::size_t getUserCount() const {
         return users.size();
     }

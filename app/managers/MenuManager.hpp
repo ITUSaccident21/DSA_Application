@@ -116,10 +116,14 @@ public:
 
     // Xóa item (đánh dấu là không available)
     bool removeItem(int id) {
-        MenuItem* item = findById(id);
-        if (item != nullptr) {
-            item->isAvailable = false;
-            return true;
+        for (std::size_t i = 0; i < size; ++i) {
+            if (items[i].id == id) {
+                for (std::size_t j = i + 1; j < size; ++j) {
+                    items[j - 1] = items[j];
+                }
+                --size;
+                return true;
+            }
         }
         return false;
     }

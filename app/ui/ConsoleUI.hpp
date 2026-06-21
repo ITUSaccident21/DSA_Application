@@ -5,6 +5,7 @@
 #include <vector>
 #include <iomanip>
 #include <cstdlib>
+#include <algorithm>
 #include "../../lib/Algorithms.hpp"
 #include "../managers/UserManager.hpp"
 #include "../managers/MenuManager.hpp"
@@ -25,17 +26,26 @@ private:
     User* currentUser;
     int nextOrderId;
     int nextMenuId;
+    int currentMenuMaxId;
+    std::string usersFile;
+    std::string menuFile;
+    std::string ordersFile;
 
 public:
-    ConsoleUI(UserManager& um, MenuManager& mm, OrderManager& om, KitchenManager& km)
+    ConsoleUI(UserManager& um, MenuManager& mm, OrderManager& om, KitchenManager& km,
+              const std::string& usersFilePath, const std::string& menuFilePath, const std::string& ordersFilePath)
         : userManager(um), menuManager(mm), orderManager(om), kitchenManager(km), currentUser(nullptr),
-          nextOrderId(1001), nextMenuId(1001) {}
+          nextOrderId(1001), nextMenuId(1001), currentMenuMaxId(1000), usersFile(usersFilePath), menuFile(menuFilePath), ordersFile(ordersFilePath) {
+        initializeIds();
+    }
+
 
     void run() {
         // Nếu không có user nào, tạo admin mặc định
         if (userManager.getUserCount() == 0) {
             User adminUser("admin", "admin123", "Administrator", UserRole::ADMIN, true);
             userManager.addUser(adminUser);
+            FileIO::saveUsers(usersFile, userManager);
             std::cout << "Created default admin account (username: admin, password: admin123)\n\n";
         }
 
@@ -82,6 +92,21 @@ private:
         // Wait for the user to press Enter using getline to consume the newline reliably
         std::string _tmp;
         std::getline(std::cin, _tmp);
+    }
+
+    void initializeIds() {
+        int maxMenuId = 1000;
+        for (std::size_t i = 0; i < menuManager.getSize(); ++i) {
+            maxMenuId = std::max(maxMenuId, menuManager.getItems()[i].id);
+        }
+        currentMenuMaxId = maxMenuId;
+        nextMenuId = maxMenuId + 1;
+
+        int maxOrderId = 1000;
+        orderManager.forEachOrderInorder([&](Order& order) {
+            maxOrderId = std::max(maxOrderId, order.orderId);
+        });
+        nextOrderId = maxOrderId + 1;
     }
 
     // ========== LOGIN SCREEN ==========
@@ -150,6 +175,7 @@ private:
         User newUser(username, password, fullName, UserRole::CUSTOMER, true);
         if (userManager.addUser(newUser)) {
             std::cout << "Registration successful! You can now login.\n";
+            FileIO::saveUsers(usersFile, userManager);
         } else {
             std::cout << "Registration failed!\n";
         }
@@ -239,13 +265,13 @@ private:
             return;
         }
 
-        // Sort items by name for consistent display
+        // Sort items by ID for consistent display
         std::vector<MenuItem> sortedItems;
         for (const auto& item : items) {
             sortedItems.push_back(*item);
         }
         ds::insertionSort(sortedItems.begin(), sortedItems.end(), [](const MenuItem& a, const MenuItem& b) {
-            return a.name < b.name;
+            return a.id < b.id;
         });
 
         std::cout << std::left << std::setw(5) << "ID" << std::setw(25) << "Name" << std::setw(10) << "Price"
@@ -301,11 +327,19 @@ private:
         std::string description;
         std::getline(std::cin, description);
 
-        MenuItem item(nextMenuId++, name, price, category, description, true);
+        int newMenuId = nextMenuId++;
+        if (currentMenuMaxId >= newMenuId) {
+            newMenuId = currentMenuMaxId + 1;
+            nextMenuId = newMenuId + 1;
+        }
+
+        MenuItem item(newMenuId, name, price, category, description, true);
         menuManager.addItem(item);
+        currentMenuMaxId = std::max(currentMenuMaxId, newMenuId);
         menuManager.sortByName();
 
         std::cout << "\nItem added successfully!\n";
+        FileIO::saveMenu(menuFile, menuManager);
     }
 
     // Thêm nhiều items và sắp xếp lại bằng InsertionSort
@@ -338,7 +372,13 @@ private:
             std::string description;
             std::getline(std::cin, description);
 
-            newItems.push_back(MenuItem(nextMenuId++, name, price, category, description, true));
+            int newMenuId = nextMenuId++;
+            if (currentMenuMaxId >= newMenuId) {
+                newMenuId = currentMenuMaxId + 1;
+                nextMenuId = newMenuId + 1;
+            }
+            newItems.push_back(MenuItem(newMenuId, name, price, category, description, true));
+            currentMenuMaxId = std::max(currentMenuMaxId, newMenuId);
         }
 
         MenuItem* items = new MenuItem[newItems.size()];
@@ -350,6 +390,7 @@ private:
         menuManager.sortByName();
         
         std::cout << "\n" << count << " items added successfully!\n";
+        FileIO::saveMenu(menuFile, menuManager);
         delete[] items;
     }
 
@@ -362,6 +403,7 @@ private:
 
         if (menuManager.removeItem(id)) {
             std::cout << "Item removed successfully!\n";
+            FileIO::saveMenu(menuFile, menuManager);
         } else {
             std::cout << "Item not found!\n";
         }
@@ -407,25 +449,22 @@ private:
     void displayOrdersByStatus() {
         std::cout << "\nSelect status:\n";
         std::cout << "0. Pending\n";
-        std::cout << "1. Confirmed\n";
-        std::cout << "2. Cooking\n";
-        std::cout << "3. Ready\n";
-        std::cout << "4. Delivered\n";
-        std::cout << "5. Cancelled\n";
+        std::cout << "1. Ready\n";
         std::cout << "\nChoice: ";
         int statusChoice;
         std::cin >> statusChoice;
         std::cin.ignore();
 
-        if (statusChoice < 0 || statusChoice > 5) {
+        if (statusChoice < 0 || statusChoice > 1) {
             std::cout << "Invalid status!\n";
             return;
         }
 
-        OrderStatus status = static_cast<OrderStatus>(statusChoice);
+        OrderStatus status = (statusChoice == 0 ? OrderStatus::PENDING : OrderStatus::READY);
         auto orders = orderManager.getOrdersByStatus(status);
 
-        std::cout << "\n--- Orders with status: " << Order(0, "").getStatusString() << " ---\n";
+        std::string statusName = (status == OrderStatus::PENDING ? "PENDING" : "READY");
+        std::cout << "\n--- Orders with status: " << statusName << " ---\n";
         if (orders.empty()) {
             std::cout << "No orders found.\n";
             return;
@@ -575,6 +614,7 @@ private:
         User staffUser(username, password, fullName, UserRole::STAFF, true);
         if (userManager.addUser(staffUser)) {
             std::cout << "Staff account created successfully!\n";
+            FileIO::saveUsers(usersFile, userManager);
         } else {
             std::cout << "Failed to create staff account!\n";
         }
@@ -655,6 +695,7 @@ private:
                     Order* order = orderManager.findOrder(topTask.orderId);
                     if (order != nullptr) {
                         order->status = OrderStatus::READY;
+                        FileIO::saveOrders(ordersFile, orderManager);
                     }
                     std::cout << "Order #" << topTask.orderId << " marked as Ready!\n";
                     waitForInput();
@@ -671,8 +712,9 @@ private:
 
         std::cout << "1. View Menu\n";
         std::cout << "2. Create Order\n";
-        std::cout << "3. View My Orders\n";
-        std::cout << "4. Logout\n";
+        std::cout << "3. Upgrade to VIP (500000 VND)\n";
+        std::cout << "4. View My Orders\n";
+        std::cout << "5. Logout\n";
         std::cout << "\nChoice: ";
 
         int choice;
@@ -688,10 +730,14 @@ private:
                 createOrder();
                 break;
             case 3:
-                viewMyOrders();
+                upgradeToVIP();
                 waitForInput();
                 break;
             case 4:
+                viewMyOrders();
+                waitForInput();
+                break;
+            case 5:
                 currentUser = nullptr;
                 break;
             default:
@@ -720,7 +766,7 @@ private:
             std::cout << item->id << ". " << item->name << " - " << item->price << " VND\n";
         }
 
-        Order order(nextOrderId++, currentUser->username, false);
+        Order order(nextOrderId++, currentUser->username, currentUser->isVIP);
         bool addMore = true;
 
         while (addMore) {
@@ -767,11 +813,35 @@ private:
             std::cout << "Total Items: " << order.getItemCount() << "\n";
             std::cout << "Total Price: " << order.totalPrice << " VND\n";
             std::cout << "\nOrder created successfully!\n";
+            FileIO::saveOrders(ordersFile, orderManager);
         } else {
             std::cout << "No items added. Order cancelled.\n";
         }
 
         waitForInput();
+    }
+
+    void upgradeToVIP() {
+        printHeader("Upgrade to VIP");
+
+        if (currentUser->isVIP) {
+            std::cout << "You are already a VIP customer.\n";
+            return;
+        }
+
+        std::cout << "VIP upgrade costs 500000 VND. Confirm upgrade? (y/n): ";
+        char choice;
+        std::cin >> choice;
+        std::cin.ignore();
+
+        if (choice != 'y' && choice != 'Y') {
+            std::cout << "VIP upgrade cancelled.\n";
+            return;
+        }
+
+        currentUser->isVIP = true;
+        FileIO::saveUsers(usersFile, userManager);
+        std::cout << "Congratulations! You are now a VIP customer.\n";
     }
 
     void viewMyOrders() {

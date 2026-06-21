@@ -16,11 +16,12 @@ public:
     std::string fullName;
     UserRole role;
     bool isActive;
+    bool isVIP;
 
-    User() : username(""), password(""), fullName(""), role(UserRole::CUSTOMER), isActive(true) {}
+    User() : username(""), password(""), fullName(""), role(UserRole::CUSTOMER), isActive(true), isVIP(false) {}
 
-    User(const std::string& u, const std::string& p, const std::string& name, UserRole r, bool active = true)
-        : username(u), password(p), fullName(name), role(r), isActive(active) {}
+    User(const std::string& u, const std::string& p, const std::string& name, UserRole r, bool active = true, bool vip = false)
+        : username(u), password(p), fullName(name), role(r), isActive(active), isVIP(vip) {}
 
     std::string getRoleString() const {
         switch (role) {
@@ -43,7 +44,7 @@ public:
 
     // Định dạng: username|password|fullName|role|active
     std::string serialize() const {
-        return username + "|" + password + "|" + fullName + "|" + getRoleString() + "|" + (isActive ? "1" : "0");
+        return username + "|" + password + "|" + fullName + "|" + getRoleString() + "|" + (isActive ? "1" : "0") + "|" + (isVIP ? "1" : "0");
     }
 
     friend std::ostream& operator<<(std::ostream& os, const User& user) {
